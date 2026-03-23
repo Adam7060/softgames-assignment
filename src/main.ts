@@ -1,23 +1,37 @@
 import { Application, Text } from 'pixi.js';
+import { GameView, ResizeData } from './views/GameView';
+import { ResolutionConfig } from './config/Resolution';
+import { Dispatcher, Events } from './core/Dispatcher';
 
 const app = new Application();
 
-async function init() {
+async function boot() {
   await app.init({
-    background: '#1a1a2e',
-    resizeTo: window,
+    background: '#000000',
   });
 
   document.body.appendChild(app.canvas);
 
+  const gameView = new GameView(app);
+
   const text = new Text({
     text: 'SoftGames Assignment',
-    style: { fill: '#ffffff', fontSize: 32 },
+    style: { fill: '#ffffff', fontSize: 48 },
   });
   text.anchor.set(0.5);
-  text.x = app.screen.width / 2;
-  text.y = app.screen.height / 2;
-  app.stage.addChild(text);
+
+  Dispatcher.on(Events.RESIZE, (data) => {
+    const resizeData = data as ResizeData;
+    const config = resizeData.orientation === 'landscape'
+      ? ResolutionConfig.landscape
+      : ResolutionConfig.portrait;
+
+    text.x = config.width / 2;
+    text.y = config.height / 2;
+  });
+
+  gameView.getGameView().addChild(text);
+  gameView.resize();
 }
 
-init();
+boot();

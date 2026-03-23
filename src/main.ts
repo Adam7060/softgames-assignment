@@ -7,10 +7,12 @@ const app = new Application();
 
 async function boot() {
   await app.init({
-    background: '#000000',
+    background: '#f48120',
   });
 
   document.body.appendChild(app.canvas);
+
+  (globalThis as any).__PIXI_APP__ = app;
 
   const gameView = new GameView(app);
 

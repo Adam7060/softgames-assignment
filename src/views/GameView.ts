@@ -1,4 +1,4 @@
-import { Application, Container, Sprite, Texture } from 'pixi.js';
+import { Application, Container } from 'pixi.js';
 import { ResolutionConfig } from '../config/Resolution';
 import { Dispatcher, Events } from '../core/Dispatcher';
 
@@ -16,23 +16,15 @@ export interface ResizeData {
 export class GameView {
   private app: Application;
   private viewContainer: Container;
-  private backgroundContainer: Container;
   private gameView: Container;
-  private background: Sprite;
   private orientation: Orientation = 'landscape';
 
   constructor(app: Application) {
     this.app = app;
 
-    this.viewContainer = new Container();
-    this.backgroundContainer = new Container();
+    this.viewContainer = new Container({ label: 'view-container' });
     this.gameView = new Container();
 
-    this.background = new Sprite(Texture.WHITE);
-    this.background.tint = 0x1a1a2e;
-    this.backgroundContainer.addChild(this.background);
-
-    this.viewContainer.addChild(this.backgroundContainer);
     this.viewContainer.addChild(this.gameView);
 
     this.app.stage.addChild(this.viewContainer);
@@ -43,10 +35,6 @@ export class GameView {
 
   public getGameView(): Container {
     return this.gameView;
-  }
-
-  public getBackgroundContainer(): Container {
-    return this.backgroundContainer;
   }
 
   public getOrientation(): Orientation {

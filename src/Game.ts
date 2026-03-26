@@ -1,4 +1,5 @@
 import { Application } from "pixi.js";
+import { GameConfig } from "./config/GameConfig";
 import { ResolutionConfig } from "./config/Resolution";
 import { BaseContainer } from "./core/BaseContainer";
 import { Dispatcher, Events } from "./core/Dispatcher";
@@ -30,7 +31,7 @@ export class Game {
   }
 
   public async boot(): Promise<void> {
-    await this.app.init({ background: "#f48120" });
+    await this.app.init({ background: GameConfig.backgroundColor });
     document.body.appendChild(this.app.canvas);
 
     (globalThis as any).__PIXI_APP__ = this.app;

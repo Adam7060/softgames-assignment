@@ -1,5 +1,5 @@
 import { Assets, Container, Graphics, Text } from "pixi.js";
-import { ResolutionConfig } from "../config/Resolution";
+import { PreloaderConfig } from "../config/PreloaderConfig";
 import { Scene } from "../core/Scene";
 import { ResizeData } from "../Game";
 
@@ -11,20 +11,19 @@ export class Preloader extends Scene {
   private progress: number = 0;
   private onContinue: () => void;
 
-  private readonly BAR_WIDTH = 600;
-  private readonly BAR_HEIGHT = 30;
-
   constructor(onContinue: () => void) {
     super({ name: "preloader" });
     this.onContinue = onContinue;
     this.loadAssets();
 
+    const { width, height, radius, backgroundColor, backgroundAlpha } = PreloaderConfig.bar;
+
     this.barContainer = new Container();
 
     this.barBg = new Graphics();
-    this.barBg.roundRect(0, 0, this.BAR_WIDTH, this.BAR_HEIGHT, 8);
-    this.barBg.fill(0x000000);
-    this.barBg.alpha = 0.3;
+    this.barBg.roundRect(0, 0, width, height, radius);
+    this.barBg.fill(backgroundColor);
+    this.barBg.alpha = backgroundAlpha;
     this.barContainer.addChild(this.barBg);
 
     this.bar = new Graphics();
@@ -33,8 +32,8 @@ export class Preloader extends Scene {
     this.addChild(this.barContainer);
 
     this.continueText = new Text({
-      text: "Click to Continue",
-      style: { fill: "#ffffff", fontSize: 40, fontWeight: "bold" },
+      text: PreloaderConfig.continueText.text,
+      style: PreloaderConfig.continueText.style,
     });
     this.continueText.anchor.set(0.5);
     this.continueText.visible = false;
@@ -45,14 +44,17 @@ export class Preloader extends Scene {
         this.onContinue();
       }
     });
+
+    this.applyLayout("landscape");
   }
 
   public setProgress(value: number): void {
     this.progress = Math.min(Math.max(value, 0), 1);
+    const { width, height, radius, fillColor } = PreloaderConfig.bar;
 
     this.bar.clear();
-    this.bar.roundRect(0, 0, this.BAR_WIDTH * this.progress, this.BAR_HEIGHT, 8);
-    this.bar.fill(0xffffff);
+    this.bar.roundRect(0, 0, width * this.progress, height, radius);
+    this.bar.fill(fillColor);
 
     if (this.progress >= 1) {
       this.barContainer.visible = false;
@@ -64,28 +66,23 @@ export class Preloader extends Scene {
   }
 
   private async loadAssets(): Promise<void> {
-    await Assets.load([
-      { alias: "button_default", src: "assets/ui/button_default.png" },
-      { alias: "button_hover", src: "assets/ui/button_hover.png" },
-      { alias: "button_pressed", src: "assets/ui/button_pressed.png" },
-      { alias: "button_close_default", src: "assets/ui/button_close_default.png" },
-      { alias: "button_close_hover", src: "assets/ui/button_close_hover.png" },
-      { alias: "button_close_pressed", src: "assets/ui/button_close_pressed.png" },
-    ], (progress) => {
+    await Assets.load(PreloaderConfig.assets, (progress) => {
       this.setProgress(progress);
     });
   }
 
+  private applyLayout(orientation: string): void {
+    const layout = orientation === "landscape"
+      ? PreloaderConfig.landscape
+      : PreloaderConfig.portrait;
+
+    this.barContainer.x = layout.bar.x;
+    this.barContainer.y = layout.bar.y;
+    this.continueText.x = layout.continueText.x;
+    this.continueText.y = layout.continueText.y;
+  }
+
   protected onResize(data: ResizeData): void {
-    const config = data.orientation === "landscape"
-      ? ResolutionConfig.landscape
-      : ResolutionConfig.portrait;
-
-    this.barContainer.x = (config.width - this.BAR_WIDTH) / 2;
-    this.barContainer.y = config.height / 2;
-
-    this.continueText.x = config.width / 2;
-    this.continueText.y = config.height / 2;
-
+    this.applyLayout(data.orientation);
   }
 }

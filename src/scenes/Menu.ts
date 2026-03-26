@@ -1,4 +1,4 @@
-import { ResolutionConfig } from "../config/Resolution";
+import { MenuConfig } from "../config/MenuConfig";
 import { Button } from "../core/Button";
 import { Scene } from "../core/Scene";
 import { ResizeData } from "../Game";
@@ -10,24 +10,26 @@ export class Menu extends Scene {
     super({ name: "menu" });
 
     this.playButton = new Button({
-      name: "play-button",
-      idle: { spriteSource: "button_default" },
-      hover: { spriteSource: "button_hover" },
-      pressed: { spriteSource: "button_pressed" },
-      buttonText: "Play",
+      ...MenuConfig.playButton,
       callback: () => {
         // TODO: start game
       },
     });
     this.addChild(this.playButton);
+
+    this.applyLayout("landscape");
+  }
+
+  private applyLayout(orientation: string): void {
+    const layout = orientation === "landscape"
+      ? MenuConfig.landscape
+      : MenuConfig.portrait;
+
+    this.playButton.x = layout.playButton.x;
+    this.playButton.y = layout.playButton.y;
   }
 
   protected onResize(data: ResizeData): void {
-    const config = data.orientation === "landscape"
-      ? ResolutionConfig.landscape
-      : ResolutionConfig.portrait;
-
-    this.playButton.x = (config.width - this.playButton.width) / 2;
-    this.playButton.y = (config.height - this.playButton.height) / 2;
+    this.applyLayout(data.orientation);
   }
 }

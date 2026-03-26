@@ -1,8 +1,11 @@
-import { Application, Container } from 'pixi.js';
-import { ResolutionConfig } from '../config/Resolution';
-import { Dispatcher, Events } from '../core/Dispatcher';
+import { Application } from "pixi.js";
+import { ResolutionConfig } from "./config/Resolution";
+import { BaseContainer } from "./core/BaseContainer";
+import { Dispatcher, Events } from "./core/Dispatcher";
+import { Menu } from "./scenes/Menu";
+import { Preloader } from "./scenes/Preloader";
 
-export type Orientation = 'landscape' | 'portrait';
+export type Orientation = "landscape" | "portrait";
 
 export interface ResizeData {
   width: number;
@@ -13,28 +16,56 @@ export interface ResizeData {
   orientation: Orientation;
 }
 
-export class GameView {
+export class Game {
   private app: Application;
-  private viewContainer: Container;
-  private gameView: Container;
-  private orientation: Orientation = 'landscape';
+  private sceneContainer: BaseContainer;
+  private overlayContainer: BaseContainer;
+  private orientation: Orientation = "landscape";
 
-  constructor(app: Application) {
-    this.app = app;
+  constructor() {
+    this.app = new Application();
 
-    this.viewContainer = new Container({ label: 'view-container' });
-    this.gameView = new Container();
+    this.sceneContainer = new BaseContainer({ name: "game" });
+    this.overlayContainer = new BaseContainer({ name: "overlay" });
+  }
 
-    this.viewContainer.addChild(this.gameView);
+  public async boot(): Promise<void> {
+    await this.app.init({ background: "#f48120" });
+    document.body.appendChild(this.app.canvas);
 
-    this.app.stage.addChild(this.viewContainer);
+    (globalThis as any).__PIXI_APP__ = this.app;
+
+    this.app.stage.addChild(this.sceneContainer);
+    this.app.stage.addChild(this.overlayContainer);
 
     window.addEventListener('resize', () => this.resize());
     this.resize();
+
+    this.showPreloader();
   }
 
-  public getGameView(): Container {
-    return this.gameView;
+  private showPreloader(): void {
+    const preloader = new Preloader(() => {
+      this.sceneContainer.removeChild(preloader);
+      this.showMenu();
+    });
+
+    this.sceneContainer.addChild(preloader);
+    this.resize();
+  }
+
+  private showMenu(): void {
+    const menu = new Menu();
+    this.sceneContainer.addChild(menu);
+    this.resize();
+  }
+
+  public getSceneContainer(): BaseContainer {
+    return this.sceneContainer;
+  }
+
+  public getOverlayContainer(): BaseContainer {
+    return this.overlayContainer;
   }
 
   public getOrientation(): Orientation {
@@ -49,9 +80,9 @@ export class GameView {
 
     const ratio = windowWidth / windowHeight;
     const prevOrientation = this.orientation;
-    this.orientation = ratio >= 1 ? 'landscape' : 'portrait';
+    this.orientation = ratio >= 1 ? "landscape" : "portrait";
 
-    const config = this.orientation === 'landscape'
+    const config = this.orientation === "landscape"
       ? ResolutionConfig.landscape
       : ResolutionConfig.portrait;
 

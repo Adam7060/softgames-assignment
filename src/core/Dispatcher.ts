@@ -1,8 +1,8 @@
 type EventCallback = (...args: unknown[]) => void;
 
 export const Events = {
-  RESIZE: 'resize',
-  ORIENTATION_CHANGE: 'orientation_change',
+  RESIZE: "resize",
+  ORIENTATION_CHANGE: "orientation_change",
 } as const;
 
 class DispatcherClass {

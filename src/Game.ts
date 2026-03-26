@@ -1,3 +1,4 @@
+import gsap from "gsap";
 import { Application } from "pixi.js";
 import { GameConfig } from "./config/GameConfig";
 import { ResolutionConfig } from "./config/Resolution";
@@ -47,8 +48,9 @@ export class Game {
   }
 
   private showPreloader(): void {
-    const preloader = new Preloader(() => {
-      this.sceneContainer.removeChild(preloader);
+    const preloader = new Preloader(async () => {
+      await gsap.to(preloader, { alpha: 0, duration: 0.3 });
+      preloader.destroy();
       this.showMenu();
     });
 
@@ -56,10 +58,12 @@ export class Game {
     this.resize();
   }
 
-  private showMenu(): void {
+  private async showMenu(): Promise<void> {
     const menu = new Menu();
+    menu.alpha = 0;
     this.sceneContainer.addChild(menu);
     this.resize();
+    await gsap.to(menu, { alpha: 1, duration: 0.3 });
   }
 
   public getSceneContainer(): BaseContainer {

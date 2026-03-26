@@ -1,3 +1,4 @@
+import gsap from "gsap";
 import { Assets, Container, Graphics } from "pixi.js";
 import { PreloaderConfig } from "../config/PreloaderConfig";
 import { GameText } from "../core/GameText";
@@ -55,7 +56,9 @@ export class Preloader extends Scene {
 
     if (this.progress >= 1) {
       this.barContainer.visible = false;
+      this.continueText.alpha = 0;
       this.continueText.visible = true;
+      gsap.to(this.continueText, { alpha: 1, duration: 0.8, yoyo: true, repeat: -1, ease: "sine.inOut" });
       this.eventMode = "static";
       this.cursor = "pointer";
       this.hitArea = { contains: () => true };
@@ -81,5 +84,10 @@ export class Preloader extends Scene {
 
   protected onResize(data: ResizeData): void {
     this.applyLayout(data.orientation);
+  }
+
+  public destroy(): void {
+    gsap.killTweensOf(this.continueText);
+    super.destroy();
   }
 }

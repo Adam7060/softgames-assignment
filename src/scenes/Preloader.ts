@@ -1,5 +1,6 @@
-import { Assets, Container, Graphics, Text } from "pixi.js";
+import { Assets, Container, Graphics } from "pixi.js";
 import { PreloaderConfig } from "../config/PreloaderConfig";
+import { GameText } from "../core/GameText";
 import { Scene } from "../core/Scene";
 import { ResizeData } from "../Game";
 
@@ -7,7 +8,7 @@ export class Preloader extends Scene {
   private bar: Graphics;
   private barBg: Graphics;
   private barContainer: Container;
-  private continueText: Text;
+  private continueText: GameText;
   private progress: number = 0;
   private onContinue: () => void;
 
@@ -31,11 +32,7 @@ export class Preloader extends Scene {
 
     this.addChild(this.barContainer);
 
-    this.continueText = new Text({
-      text: PreloaderConfig.continueText.text,
-      style: PreloaderConfig.continueText.style,
-    });
-    this.continueText.anchor.set(0.5);
+    this.continueText = new GameText(PreloaderConfig.continueText);
     this.continueText.visible = false;
     this.addChild(this.continueText);
 

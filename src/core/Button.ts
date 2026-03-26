@@ -1,18 +1,18 @@
-import { Text } from "pixi.js";
 import { BaseContainer, BaseContainerSettings } from "./BaseContainer";
 import { GameSprite, GameSpriteSettings } from "./GameSprite";
+import { GameText, GameTextSettings } from "./GameText";
 
 export interface ButtonSettings extends BaseContainerSettings {
   idle: GameSpriteSettings;
   hover?: GameSpriteSettings;
   pressed?: GameSpriteSettings;
-  buttonText?: string;
+  buttonText?: GameTextSettings;
   callback?: () => void;
 }
 
 export class Button extends BaseContainer {
   private sprite: GameSprite;
-  private textLabel: Text | null = null;
+  private textLabel: GameText | null = null;
   private settings: ButtonSettings;
 
   constructor(settings: ButtonSettings) {
@@ -23,13 +23,7 @@ export class Button extends BaseContainer {
     this.addChild(this.sprite);
 
     if (settings.buttonText) {
-      this.textLabel = new Text({
-        text: settings.buttonText,
-        style: { fill: "#ffffff", fontSize: 36, fontWeight: "bold" },
-      });
-      this.textLabel.anchor.set(0.5);
-      this.textLabel.x = this.sprite.width / 2;
-      this.textLabel.y = this.sprite.height / 2;
+      this.textLabel = new GameText(settings.buttonText);
       this.addChild(this.textLabel);
     }
 

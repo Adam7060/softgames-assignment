@@ -11,6 +11,7 @@ export interface GameSpriteSettings {
 export class GameSprite extends PIXI.Sprite {
   constructor(settings: GameSpriteSettings) {
     super(PIXI.Assets.get<PIXI.Texture>(settings.spriteSource));
+    this.anchor.set(0.5, 0.5);
     this.applySettings(settings);
   }
 

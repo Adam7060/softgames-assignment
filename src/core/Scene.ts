@@ -1,5 +1,6 @@
 import { BaseContainer, BaseContainerSettings } from "./BaseContainer";
-import { Dispatcher, Events } from "./Dispatcher";
+import { Events } from "../config/Events";
+import { Dispatcher } from "./Dispatcher";
 import { ResizeData } from "../Game";
 
 export class Scene extends BaseContainer {

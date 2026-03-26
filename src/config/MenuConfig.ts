@@ -6,7 +6,10 @@ export const MenuConfig = {
     idle: { spriteSource: "button_default" },
     hover: { spriteSource: "button_hover" },
     pressed: { spriteSource: "button_pressed" },
-    buttonText: "Play",
+    buttonText: {
+      text: "Play",
+      style: { fill: "#ffffff", fontSize: 36, fontWeight: "bold" },
+    },
   } as ButtonSettings,
   landscape: {
     playButton: { x: 1130, y: 670 },

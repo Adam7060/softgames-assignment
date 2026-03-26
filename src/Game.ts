@@ -2,7 +2,8 @@ import { Application } from "pixi.js";
 import { GameConfig } from "./config/GameConfig";
 import { ResolutionConfig } from "./config/Resolution";
 import { BaseContainer } from "./core/BaseContainer";
-import { Dispatcher, Events } from "./core/Dispatcher";
+import { Events } from "./config/Events";
+import { Dispatcher } from "./core/Dispatcher";
 import { Menu } from "./scenes/Menu";
 import { Preloader } from "./scenes/Preloader";
 

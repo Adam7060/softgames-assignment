@@ -20,7 +20,7 @@ export const MenuConfig = {
     ...buttonBase,
     name: "ace-of-shadows-button",
     buttonText: {
-      text: "Ace of Shadows",
+      text: "1. Ace of Shadows",
       style: buttonTextStyle,
       maxWidth: 550,
       maxHeight: 120,
@@ -30,7 +30,7 @@ export const MenuConfig = {
     ...buttonBase,
     name: "magic-words-button",
     buttonText: {
-      text: "Magic Words",
+      text: "2. Magic Words",
       style: buttonTextStyle,
       maxWidth: 550,
       maxHeight: 120,
@@ -40,7 +40,7 @@ export const MenuConfig = {
     ...buttonBase,
     name: "phoenix-flame-button",
     buttonText: {
-      text: "Phoenix Flame",
+      text: "3. Phoenix Flame",
       style: buttonTextStyle,
       maxWidth: 550,
       maxHeight: 120,

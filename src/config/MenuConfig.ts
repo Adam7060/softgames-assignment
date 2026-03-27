@@ -4,28 +4,56 @@ import { getGradientFill } from "../core/Utils";
 const buttonTextStyle = {
   fontSize: 72,
   fontWeight: "bold" as const,
-  fill: getGradientFill(36, [0, 1], [0xffd760, 0xffb020]),
-  dropShadow: { angle: 1.5, color: 0x5b3100, distance: 2 },
-  stroke: { color: "#5b3100", width: 3, join: "round" as const },
+  fill: getGradientFill(36, [0, 1], [0xe0e0e0, 0x909090]),
+  dropShadow: { angle: 1.5, color: 0x202020, distance: 2 },
+  stroke: { color: "#303030", width: 3, join: "round" as const },
+};
+
+const buttonBase = {
+  idle: { spriteSource: "button_default" },
+  hover: { spriteSource: "button_hover" },
+  pressed: { spriteSource: "button_pressed" },
 };
 
 export const MenuConfig = {
-  playButton: {
-    name: "play-button",
-    idle: { spriteSource: "button_default" },
-    hover: { spriteSource: "button_hover" },
-    pressed: { spriteSource: "button_pressed" },
+  aceOfShadows: {
+    ...buttonBase,
+    name: "ace-of-shadows-button",
     buttonText: {
-      text: "Play",
+      text: "Ace of Shadows",
+      style: buttonTextStyle,
+      maxWidth: 550,
+      maxHeight: 120,
+    },
+  } as ButtonSettings,
+  magicWords: {
+    ...buttonBase,
+    name: "magic-words-button",
+    buttonText: {
+      text: "Magic Words",
+      style: buttonTextStyle,
+      maxWidth: 550,
+      maxHeight: 120,
+    },
+  } as ButtonSettings,
+  phoenixFlame: {
+    ...buttonBase,
+    name: "phoenix-flame-button",
+    buttonText: {
+      text: "Phoenix Flame",
       style: buttonTextStyle,
       maxWidth: 550,
       maxHeight: 120,
     },
   } as ButtonSettings,
   landscape: {
-    playButton: { x: 1280, y: 720 },
+    aceOfShadows: { x: 0, y: -240 },
+    magicWords: { x: 0, y: 0 },
+    phoenixFlame: { x: 0, y: 240 },
   },
   portrait: {
-    playButton: { x: 720, y: 1280 },
+    aceOfShadows: { x: 0, y: -240 },
+    magicWords: { x: 0, y: 0 },
+    phoenixFlame: { x: 0, y: 240 },
   },
 };

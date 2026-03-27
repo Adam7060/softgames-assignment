@@ -1,11 +1,15 @@
 import gsap from "gsap";
-import { Application } from "pixi.js";
+import { Application, Graphics } from "pixi.js";
 import { GameConfig } from "./config/GameConfig";
+import { Events } from "./config/Events";
 import { ResolutionConfig } from "./config/Resolution";
 import { BaseContainer } from "./core/BaseContainer";
-import { Events } from "./config/Events";
 import { Dispatcher } from "./core/Dispatcher";
-import { Menu } from "./scenes/Menu";
+import { Scene } from "./core/Scene";
+import { AceOfShadows } from "./scenes/AceOfShadows";
+import { MagicWords } from "./scenes/MagicWords";
+import { Menu, MenuEvents } from "./scenes/Menu";
+import { PhoenixFlame } from "./scenes/PhoenixFlame";
 import { Preloader } from "./scenes/Preloader";
 
 export type Orientation = "landscape" | "portrait";
@@ -24,6 +28,8 @@ export class Game {
   private sceneContainer: BaseContainer;
   private overlayContainer: BaseContainer;
   private orientation: Orientation = "landscape";
+  private currentScene: Scene | null = null;
+  private debugRect: Graphics | null = null;
 
   constructor() {
     this.app = new Application();
@@ -41,8 +47,13 @@ export class Game {
     this.app.stage.addChild(this.sceneContainer);
     this.app.stage.addChild(this.overlayContainer);
 
-    window.addEventListener('resize', () => this.resize());
+    window.addEventListener("resize", () => this.resize());
     this.resize();
+
+    Dispatcher.on(MenuEvents.ACE_OF_SHADOWS, () => this.showScene(new AceOfShadows()));
+    Dispatcher.on(MenuEvents.MAGIC_WORDS, () => this.showScene(new MagicWords()));
+    Dispatcher.on(MenuEvents.PHOENIX_FLAME, () => this.showScene(new PhoenixFlame()));
+    Dispatcher.on(Events.SCENE_CLOSE, () => this.showMenu());
 
     this.showPreloader();
   }
@@ -59,11 +70,32 @@ export class Game {
   }
 
   private async showMenu(): Promise<void> {
+    if (this.currentScene) {
+      await gsap.to(this.currentScene, { alpha: 0, duration: 0.3 });
+      this.currentScene.destroy();
+      this.currentScene = null;
+    }
+
     const menu = new Menu();
     menu.alpha = 0;
+    this.currentScene = menu;
     this.sceneContainer.addChild(menu);
     this.resize();
     await gsap.to(menu, { alpha: 1, duration: 0.3 });
+  }
+
+  private async showScene(scene: Scene): Promise<void> {
+    if (this.currentScene) {
+      await gsap.to(this.currentScene, { alpha: 0, duration: 0.3 });
+      this.currentScene.destroy();
+      this.currentScene = null;
+    }
+
+    scene.alpha = 0;
+    this.currentScene = scene;
+    this.sceneContainer.addChild(scene);
+    this.resize();
+    await gsap.to(scene, { alpha: 1, duration: 0.3 });
   }
 
   public getSceneContainer(): BaseContainer {
@@ -115,6 +147,15 @@ export class Game {
     canvas.style.height = `${windowHeight}px`;
 
     this.app.stage.position.set(offsetX, offsetY);
+    this.sceneContainer.position.set(config.width / 2, config.height / 2);
+
+    if (this.debugRect) {
+      this.sceneContainer.removeChild(this.debugRect);
+    }
+    this.debugRect = new Graphics();
+    this.debugRect.rect(-config.width / 2, -config.height / 2, config.width, config.height);
+    this.debugRect.stroke({ color: 0xff0000, width: 4 });
+    this.sceneContainer.addChildAt(this.debugRect, 0);
 
     const scale = windowWidth / width;
 

@@ -11,17 +11,18 @@ export const PreloaderConfig = {
     text: "Click to Continue",
     style: {
       fill: "#ffffff",
-      fontSize: 40,
+      fontSize: 80,
       fontWeight: "bold" as const,
     },
+    width: 500,
   },
   landscape: {
-    bar: { x: 980, y: 720 },
-    continueText: { x: 1280, y: 720 },
+    bar: { x: -300, y: 0 },
+    continueText: { x: 0, y: 0 },
   },
   portrait: {
-    bar: { x: 420, y: 1280 },
-    continueText: { x: 720, y: 1280 },
+    bar: { x: -300, y: 0 },
+    continueText: { x: 0, y: 0 },
   },
   assets: [
     { alias: "button_default", src: "assets/ui/button_default.png" },
